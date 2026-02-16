@@ -10,18 +10,26 @@
         .instructions { font-size: 0.95rem; color: #666; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .text-block { font-size: 1.3rem; word-spacing: 3px; }
         
+        /* Forces the stem and input to stay on the same line */
+        .word-unit {
+            white-space: nowrap;
+            display: inline-block;
+        }
+
         input { 
             border: none; 
             background: transparent;
             font-size: 1.2rem; 
-            text-align: center; 
+            text-align: left; 
             font-family: 'Courier New', monospace; 
             outline: none; 
             padding: 0; 
             margin: 0;
             color: #2c3e50;
-            /* This spaces out the underscores clearly */
+            /* Spaces out the underscores clearly */
             letter-spacing: 4px; 
+            display: inline-block;
+            vertical-align: baseline;
         }
         
         input::placeholder {
@@ -59,7 +67,7 @@
 <div class="container">
     <div class="progress" id="progressTracker">Passage 1 of 5</div>
     <h2>Reading Task: Complete the Word</h2>
-    <p class="instructions">Read the passage. Complete the words by typing the missing letters. Each underscore represents one letter.</p>
+    <div class="instructions">Read the passage. Complete the words by typing the missing letters. Each underscore represents one letter.</div>
     
     <div id="exercise" class="text-block"></div>
 
@@ -88,7 +96,7 @@
         document.getElementById('result').innerHTML = "";
         progressTracker.innerText = `Passage ${index + 1} of ${bank.length}`;
         
-        // Split text: First sentence stays intact
+        // Split text: Sentence 1 is intact
         const sentences = fullText.match(/[^\.!\?]+[\.!\?]+/g);
         const firstSentence = sentences[0];
         const remainingText = sentences.slice(1).join(" ");
@@ -98,12 +106,12 @@
         let missingCount = 0;
 
         words.forEach((word, wordIdx) => {
-            // Logic: Every second word, max 10 words
+            // Logic: Every second word, cap at 10 total words
             if (wordIdx % 2 === 1 && missingCount < 10) {
                 const cleanWord = word.replace(/[,\.]/g, '');
                 const punctuation = word.replace(/[a-zA-Z]/g, '');
                 
-                // Math.ceil ensures the "second half" is the part deleted
+                // TOEFL logic: First half stays, second half deleted
                 const keepLength = Math.ceil(cleanWord.length / 2);
                 const missingLength = cleanWord.length - keepLength;
                 
@@ -111,14 +119,15 @@
                 const answer = cleanWord.substring(keepLength);
                 const underscores = "_".repeat(missingLength);
                 
-                // Calculate width based on letter spacing
-                const calculatedWidth = (missingLength * 18) + 10;
+                // Dynamic width adjustment for spaced underscores
+                const calculatedWidth = (missingLength * 16) + 5;
                 
-                formattedHTML += `${stem}<input type="text" 
+                // 'word-unit' span ensures stem + input never separate
+                formattedHTML += `<span class="word-unit">${stem}<input type="text" 
                                     data-answer="${answer}" 
                                     maxlength="${missingLength}" 
                                     style="width: ${calculatedWidth}px" 
-                                    placeholder="${underscores}">${punctuation} `;
+                                    placeholder="${underscores}"></span>${punctuation} `;
                 missingCount++;
             } else {
                 formattedHTML += word + " ";
