@@ -2,16 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>TOEFL 2026: Sequential Task Practice</title>
+    <title>TOEFL iBT 2026: Reading Practice</title>
     <style>
         body { font-family: 'Arial', sans-serif; line-height: 1.8; padding: 40px; background: #f4f4f9; color: #333; }
         .container { max-width: 800px; margin: auto; background: white; padding: 40px; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         h2 { color: #00467f; margin-top: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; }
         .instructions { font-size: 0.95rem; color: #666; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .text-block { font-size: 1.3rem; word-spacing: 3px; }
-        input { border: none; border-bottom: 1px solid #333; width: auto; font-size: 1.2rem; text-align: center; font-family: 'Courier New', monospace; outline: none; padding: 0; margin: 0 1px; background: #fffde7; }
-        .correct { background: #e8f5e9; border-bottom: 2px solid #2e7d32; color: #2e7d32; }
-        .wrong { background: #ffebee; border-bottom: 2px solid #c62828; color: #c62828; }
+        
+        input { 
+            border: none; 
+            background: transparent;
+            font-size: 1.2rem; 
+            text-align: center; 
+            font-family: 'Courier New', monospace; 
+            outline: none; 
+            padding: 0; 
+            margin: 0;
+            color: #2c3e50;
+            /* This spaces out the underscores clearly */
+            letter-spacing: 4px; 
+        }
+        
+        input::placeholder {
+            color: #333;
+            opacity: 1;
+        }
+
+        input:focus { 
+            background: #fff9c4; 
+        }
+
+        .correct { 
+            color: #2e7d32 !important; 
+            font-weight: bold; 
+            background: #e8f5e9 !important; 
+            letter-spacing: normal; 
+        }
+
+        .wrong { 
+            color: #c62828 !important; 
+            font-weight: bold; 
+            background: #ffebee !important; 
+            letter-spacing: normal;
+        }
+
         .btn-group { margin-top: 30px; display: flex; gap: 10px; }
         button { padding: 10px 20px; cursor: pointer; border: 1px solid #00467f; background: #00467f; color: white; font-weight: bold; border-radius: 3px; }
         button:disabled { background: #ccc; border-color: #ccc; cursor: not-allowed; }
@@ -24,13 +59,13 @@
 <div class="container">
     <div class="progress" id="progressTracker">Passage 1 of 5</div>
     <h2>Reading Task: Complete the Word</h2>
-    <p class="instructions">Read the passage. Complete the words by typing the missing letters. Each underscore represents one letter. Check your answers. If you make an error, try again until you get each word correct before moving to the next passage.</p>
+    <p class="instructions">Read the passage. Complete the words by typing the missing letters. Each underscore represents one letter.</p>
     
     <div id="exercise" class="text-block"></div>
 
     <div class="btn-group">
         <button onclick="checkAnswers()">Check Answers</button>
-        <button id="nextBtn" onclick="nextPassage()" style="background: #666; border-color: #666;">Next Passage</button>
+        <button id="nextBtn" onclick="nextPassage()">Next Passage</button>
     </div>
     <div id="result"></div>
 </div>
@@ -53,7 +88,7 @@
         document.getElementById('result').innerHTML = "";
         progressTracker.innerText = `Passage ${index + 1} of ${bank.length}`;
         
-        // Split text into first sentence and the rest
+        // Split text: First sentence stays intact
         const sentences = fullText.match(/[^\.!\?]+[\.!\?]+/g);
         const firstSentence = sentences[0];
         const remainingText = sentences.slice(1).join(" ");
@@ -63,21 +98,27 @@
         let missingCount = 0;
 
         words.forEach((word, wordIdx) => {
-            // Rule: Every second word (index 1, 3, 5...) and cap at 10 missing words
+            // Logic: Every second word, max 10 words
             if (wordIdx % 2 === 1 && missingCount < 10) {
                 const cleanWord = word.replace(/[,\.]/g, '');
                 const punctuation = word.replace(/[a-zA-Z]/g, '');
                 
+                // Math.ceil ensures the "second half" is the part deleted
                 const keepLength = Math.ceil(cleanWord.length / 2);
                 const missingLength = cleanWord.length - keepLength;
                 
                 const stem = cleanWord.substring(0, keepLength);
                 const answer = cleanWord.substring(keepLength);
-                
-                // One underscore per missing letter
                 const underscores = "_".repeat(missingLength);
                 
-                formattedHTML += `${stem}<input type="text" data-answer="${answer}" maxlength="${missingLength}" style="width: ${missingLength * 18}px" placeholder="${underscores}">${punctuation} `;
+                // Calculate width based on letter spacing
+                const calculatedWidth = (missingLength * 18) + 10;
+                
+                formattedHTML += `${stem}<input type="text" 
+                                    data-answer="${answer}" 
+                                    maxlength="${missingLength}" 
+                                    style="width: ${calculatedWidth}px" 
+                                    placeholder="${underscores}">${punctuation} `;
                 missingCount++;
             } else {
                 formattedHTML += word + " ";
@@ -85,8 +126,6 @@
         });
 
         exerciseDiv.innerHTML = formattedHTML;
-        
-        // Disable "Next" if we are at the end
         document.getElementById('nextBtn').disabled = (index === bank.length - 1);
     }
 
@@ -111,7 +150,6 @@
         }
     }
 
-    // Load the first one on start
     displayExercise(currentIndex);
 </script>
 
