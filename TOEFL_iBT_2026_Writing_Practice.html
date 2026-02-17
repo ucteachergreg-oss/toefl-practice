@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TOEFL iBT 2026: Writing Practice</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; line-height: 1.6; padding: 40px; background: #f4f4f9; color: #333; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 40px; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h2 { color: #00467f; margin-top: 0; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #00467f; padding-bottom: 10px; }
+        .discussion-box { background: #fff; border: 1px solid #e0e0e0; padding: 20px; margin-bottom: 20px; border-radius: 5px; }
+        .prof-post { border-left: 5px solid #00467f; padding-left: 15px; margin-bottom: 25px; }
+        .student-post { background: #f9f9f9; padding: 15px; margin-bottom: 15px; border-radius: 5px; border: 1px italic #ddd; }
+        .name { font-weight: bold; color: #00467f; margin-bottom: 5px; display: block; }
+        .timer { font-size: 1.2rem; font-weight: bold; color: #c62828; text-align: right; margin-bottom: 10px; }
+        textarea { width: 100%; height: 200px; padding: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 1.1rem; font-family: 'Arial', sans-serif; resize: vertical; box-sizing: border-box; }
+        .word-count { text-align: right; font-size: 0.9rem; color: #666; margin-top: 5px; }
+        .btn-group { margin-top: 20px; display: flex; justify-content: space-between; }
+        button { padding: 12px 25px; cursor: pointer; border: 1px solid #00467f; background: #00467f; color: white; font-weight: bold; border-radius: 3px; }
+        button:hover { background: #00335d; }
+        .instructions { background: #eef2f7; padding: 15px; border-radius: 5px; font-size: 0.95rem; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="timer" id="timer">10:00</div>
+    <h2>Writing Task: Academic Discussion</h2>
+    
+    <div class="instructions">
+        <strong>Instructions:</strong> Your professor is teaching a class on sociology. Write a post responding to the professor's question. In your response, you should express and support your personal opinion and contribute to the discussion in your own words. (Minimum 100 words recommended).
+    </div>
+
+    <div class="discussion-box">
+        <div class="prof-post">
+            <span class="name">Professor Dr. Elizabeth Miller</span>
+            <p>Next week, we will be discussing the impact of remote work on urban development. Some argue that the rise of working from home will lead to the "death of the city" as people move to rural areas. Others believe cities will simply evolve into social hubs. What is your perspective? Do you think the trend toward remote work is ultimately positive or negative for society?</p>
+        </div>
+
+        <div class="student-post">
+            <span class="name">Kelly</span>
+            <p>I think it's mostly positive. Remote work reduces the need for long commutes, which is better for the environment and gives people more time with their families. Even if cities lose some office workers, they will become more affordable for artists and young people.</p>
+        </div>
+
+        <div class="student-post">
+            <span class="name">Andrew</span>
+            <p>I disagree with Kelly. I think cities rely on the daily influx of workers to support local businesses like cafes and transit systems. If everyone stays home, the economic heart of the city will stop beating, leading to higher crime and urban decay.</p>
+        </div>
+    </div>
+
+    <textarea id="response" placeholder="Write your response here..." oninput="updateWordCount()"></textarea>
+    <div class="word-count">Word Count: <span id="wCount">0</span></div>
+
+    <div class="btn-group">
+        <button onclick="startTimer()">Start Timer</button>
+        <button onclick="submitResponse()">Submit Response</button>
+    </div>
+</div>
+
+<script>
+    let timeLeft = 600; // 10 minutes
+    let timerId = null;
+
+    function startTimer() {
+        if (timerId) return;
+        timerId = setInterval(() => {
+            timeLeft--;
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            document.getElementById('timer').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            if (timeLeft <= 0) {
+                clearInterval(timerId);
+                alert("Time is up!");
+                document.getElementById('response').disabled = true;
+            }
+        }, 1000);
+    }
+
+    function updateWordCount() {
+        const text = document.getElementById('response').value.trim();
+        const words = text ? text.split(/\s+/).length : 0;
+        document.getElementById('wCount').innerText = words;
+    }
+
+    function submitResponse() {
+        const responseText = document.getElementById('response').value;
+        if (responseText.length < 50) {
+            alert("Your response is a bit short. Try to elaborate more on your points!");
+        } else {
+            alert("Response submitted successfully! In the real TOEFL, this would now be graded for development, grammar, and vocabulary.");
+        }
+    }
+</script>
+
+</body>
+</html>
